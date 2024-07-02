@@ -5,15 +5,16 @@ body {
 }
 
 .mood-container {
-    width: 50%;
+    height: 462px;
     border-radius: 1rem;
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    padding: 1rem;
     margin-bottom: 20px;
-    display: flex; 
-    flex-direction: column;
+    display: flex;
     align-items: center;
+    justify-content: flex-start;
+    align-content: center;
+    flex-direction: column;
 }
 
 h2 {
@@ -23,7 +24,12 @@ h2 {
 }
 
 .moodOptions {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .moodButton:hover {
@@ -31,7 +37,7 @@ h2 {
 }
 
 .selectedMood {
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 18px;
 }
 
@@ -49,7 +55,8 @@ h2 {
     padding: 10px 15px;
     text-align: center;
     transition: 200ms;
-    width: 40%;
+    width: 45%;
+    margin: 1px;
     margin-bottom: 5px;
     box-sizing: border-box;
     border: 0;
