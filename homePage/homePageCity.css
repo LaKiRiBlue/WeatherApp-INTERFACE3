@@ -43,13 +43,13 @@ body {
 .contentWrapper {
   display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     width: 100%;
     max-width: 800px;
     margin: 25px;
     align-content: space-around;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
 }
   
 
