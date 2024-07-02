@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.mood-container {
+    width: 50%;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-bottom: 20px;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 200;
+}
+
+.moodOptions {
+    margin-top: 20px;
+}
+
+.moodButton:hover {
+    background-color: #0056b3;
+}
+
+.selectedMood {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.selectedMood span {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.moodButton {
+    background-color: #2d92f1;
+    border-radius: 12px;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    transition: 200ms;
+    width: 40%;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.moodButton:not(:disabled):hover,
+.moodButton:not(:disabled):focus {
+    outline: 0;
+    background: #2d92f1;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 3px 8px 0 rgba(0,0,0,.15);
+}
+
+.moodButton:disabled {
+    filter: saturate(0.2) opacity(0.5);
+    -webkit-filter: saturate(0.2) opacity(0.5);
+    cursor: not-allowed;
+}

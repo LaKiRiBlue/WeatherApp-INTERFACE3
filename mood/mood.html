@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Daily Mood Picker</title>
+    <link rel="stylesheet" href="mood.css">
+</head>
+<body>
+    <div class="moodContainer">
+        <h1>What's your mood today?</h1>
+        <div class="moodOptions">
+            <button class="moodButton" data-mood="happy">😊 Happy</button>
+            <button class="moodButton" data-mood="sad">😢 Sad</button>
+            <button class="moodButton" data-mood="mad">😡 Mad</button>
+            <button class="moodButton" data-mood="cool">😎 Cool</button>
+            <button class="moodButton" data-mood="excited">😆 Excited</button>
+            <button class="moodButton" data-mood="flirty">😘 Flirty</button>
+            <button class="moodButton" data-mood="pretty">🦄 Pretty</button>
+            <button class="moodButton" data-mood="doubt">🤔 Doubt</button>
+            <button class="moodButton" data-mood="hungry">🤤 Hungry</button>
+            <button class="moodButton" data-mood="petty">🤭 Petty</button>
+        </div>
+        <div class="selectedMood">
+            Today you are: <span id="selectedMood">None</span>
+        </div>
+    </div>
+
+    <script src="mood.js"></script>
+</body>
+</html>
