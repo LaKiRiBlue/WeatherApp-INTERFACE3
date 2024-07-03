@@ -1,5 +1,3 @@
-// homePage.js
-
 // Selecting DOM elements
 const searchInput = document.querySelector("#searchInput");
 const searchButton = document.querySelector("#searchButton");
@@ -12,12 +10,22 @@ const dayName = document.getElementById("day-name");
 const dateElement = document.getElementById("date");
 const hourlyWeatherContainer = document.getElementById("hourlyWeatherContainer");
 const dailyWeatherContainer = document.getElementById("dailyWeatherContainer");
+const localTimeElement = document.getElementById("local-time");
 
 // API Key for OpenWeatherMap
 import { API_KEY } from '../config.js';
 
+// Function to get the current day name (e.g., Monday)
+const getCurrentDayName = () => {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDate = new Date();
+    const dayOfWeek = currentDate.getDay();
+    return daysOfWeek[dayOfWeek];
+};
+
 // Function to set weather details based on API response
 const setWeatherDetails = (data) => {
+    // Update other weather details as before
     desc.textContent = data.weather[0].description;
     weather.textContent = `${Math.round(data.main.temp - 273.15)}°C`;
     humidity.textContent = `${data.main.humidity}%`;
@@ -46,7 +54,13 @@ const setWeatherDetails = (data) => {
             weatherIcon.src = ""; // Handle default case if necessary
             break;
     }
+
+    // Update local time based on timezone
+    const timezoneOffset = data.timezone / 3600; // Convert timezone in seconds to hours
+    displayLocalTime(data.coord.lat, data.coord.lon, timezoneOffset);
+    displayDate(); // Update date in mainContainer
 };
+
 
 // Function to fetch weather data from OpenWeatherMap API
 const callWeatherAPI = (city) => {
@@ -163,20 +177,27 @@ const fetchCityCoordinates = (city) => {
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
 
-// Function to get the current day name (e.g., Monday)
-const getCurrentDayName = () => {
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentDate = new Date();
-    const dayOfWeek = currentDate.getDay();
-    return daysOfWeek[dayOfWeek];
+const displayLocalTime = (latitude, longitude, timezoneOffset) => {
+    const localTimeElement = document.getElementById("local-time");
+
+    const updateTime = () => {
+        const currentUTC = new Date().getTime(); // Current UTC time in milliseconds
+        const cityOffset = timezoneOffset * 1000; // Convert seconds to milliseconds for city's timezone offset
+        const localTime = new Date(currentUTC + cityOffset); // Calculate local time
+        localTimeElement.textContent = `Local Time: ${localTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    };
+
+    setInterval(updateTime, 1000); // Update time every second
+    updateTime(); // Initial call to display time immediately
 };
 
-// Function to get the current date in format "Friday 28"
-const getCurrentDate = () => {
+
+// Function to display the current date in mainContainer
+const displayDate = () => {
     const currentDate = new Date();
     const day = currentDate.getDate();
     const month = currentDate.toLocaleString('default', { month: 'long' });
-    return `${month} ${day}`;
+    dateElement.textContent = `${month} ${day}`;
 };
 
 // Event listener for search button click
@@ -186,7 +207,6 @@ searchButton.addEventListener("click", () => {
         alert("Please enter a city name.");
     } else {
         callWeatherAPI(cityName);
-        fetchCityCoordinates(cityName);
     }
 });
 
@@ -198,7 +218,6 @@ searchInput.addEventListener("keypress", (e) => {
             alert("Please enter a city name.");
         } else {
             callWeatherAPI(cityName);
-            fetchCityCoordinates(cityName);
         }
     }
 });
@@ -206,10 +225,32 @@ searchInput.addEventListener("keypress", (e) => {
 // Function to initialize the page with default city (Brussels) weather
 const initializeWeather = () => {
     callWeatherAPI("Brussels"); // Replace with your default city
-    fetchCityCoordinates("Brussels"); // Fetch both daily and hourly weather
     dayName.textContent = getCurrentDayName();
-    dateElement.textContent = getCurrentDate();
+    displayDate(); // Display current date
 };
 
 // Initialize weather data on page load
 document.addEventListener("DOMContentLoaded", initializeWeather);
+
+// Initialize Leaflet map
+const map = L.map('map').setView([51.505, -0.09], 13); // Set initial map center and zoom level
+
+// Add OpenStreetMap tile layer as the base map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+
+fetch(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Weather map data not found. Status: ${response.status}`);
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Create a new layer and add it to the map
+        const weatherLayer = L.tileLayer(URL.createObjectURL(blob)).addTo(map);
+    })
+    .catch(error => console.error('Error fetching weather map data:', error));
