@@ -19,7 +19,7 @@ body {
 }
 
 .dailyCard {
-    background-color: #ffffff;
+    background-color: rgb(255, 255, 255, 0.7);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -35,7 +35,7 @@ body {
 
 .dailyCard .weatherIcon {
     width: 50px;
-    height: 50px;
+    height: auto;
     margin-bottom: 10px;
 }
 
@@ -56,4 +56,22 @@ body {
 
 .dailyCard .temperature .min {
     color: #3498db;
+}
+@media only screen and (max-width: 600px) {
+    .dailyWeatherContainer {
+        width: 100%;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dailyCard {
+        width: 90%;
+        height: 100px;
+        padding: 7px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 }
