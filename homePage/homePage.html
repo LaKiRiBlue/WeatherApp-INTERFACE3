@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="../hourly/hourlyWeather.css">
     <link rel="stylesheet" href="../dailyWeather/dailyWeather.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #map {
@@ -27,7 +26,6 @@
     </div>
     <div class="contentWrapper">
         <div class="mainContainer">
-            <!-- Your existing content -->
             <div class="searchInput">
                 <input type="text" placeholder="Enter City Name" id="searchInput" value="Brussels" />
                 <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -37,9 +35,10 @@
             </div>
             <div id="local-time"></div>
             <div class="weatherDetails">
-                <div class="weatherIcon">
-                    <img src="../images/sun.png" alt="Clouds" id="weatherIcon">
+                <div id="weatherIconContainer">
+                    <img id="weatherIcon" src="" alt="Weather Icon">
                 </div>
+                
                 <div class="cityDetails">
                     <div class="weather" id="weather"></div>
                     <div class="desc"></div>
@@ -57,25 +56,22 @@
             </div>
         </div>
         <div class="mood-container">
-            <!-- Using object tag to embed mood.html -->
             <object type="text/html" data="../mood/mood.html" width="100%" height="400px" style="border: none;"></object>
         </div>
     </div>
-    
     <div class="hourlyWeatherContainer" id="hourlyWeatherContainer">
         <!-- Hourly weather cards will be dynamically inserted here -->
     </div>
     <div class="dailyWeatherContainer" id="dailyWeatherContainer">
         <!-- Daily weather cards will be dynamically inserted here -->
     </div>
-    <div id="map"></div> <!-- This div will hold the weather map -->
-
-    <!-- Include scripts at the end of body -->
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
     <script src="homePage.js" type="module"></script>
     <script src="../hourly/hourlyWeather.js" type="module"></script>
     <script src="../mood/mood.js" type="module"></script>
     <script src="../dailyWeather/dailyWeather.js" type="module"></script>
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body>
 </html>

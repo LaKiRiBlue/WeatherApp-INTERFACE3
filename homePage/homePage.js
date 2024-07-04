@@ -13,7 +13,10 @@ const dailyWeatherContainer = document.getElementById("dailyWeatherContainer");
 const localTimeElement = document.getElementById("local-time");
 
 // API Key for OpenWeatherMap
-import { API_KEY } from '../config.js';
+import { API_KEY } from '../config.js'; // Adjust the path as needed
+
+// Variable to store interval ID
+let timeIntervalId;
 
 // Function to get the current day name (e.g., Monday)
 const getCurrentDayName = () => {
@@ -31,36 +34,53 @@ const setWeatherDetails = (data) => {
     humidity.textContent = `${data.main.humidity}%`;
     windSpeed.textContent = `${data.wind.speed} km/h`;
 
-    switch (data.weather[0].main) {
-        case 'Clouds':
-            weatherIcon.src = "../images/Clouds.png";
-            break;
-        case 'Clear':
-            weatherIcon.src = "../images/sun.png";
-            break;
-        case 'Rain':
-            weatherIcon.src = "../images/rainy.png";
-            break;
-        case 'Mist':
-            weatherIcon.src = "../images/mist.png";
-            break;
-        case 'Snow':
-            weatherIcon.src = "../images/snow.png";
-            break;
-        case 'Haze':
-            weatherIcon.src = "../images/haze.png";
-            break;
-        default:
-            weatherIcon.src = ""; // Handle default case if necessary
-            break;
-    }
+    // Set weather icon dynamically based on API response
+    const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+    weatherIcon.src = iconUrl;
 
-    // Update local time based on timezone
-    const timezoneOffset = data.timezone / 3600; // Convert timezone in seconds to hours
-    displayLocalTime(data.coord.lat, data.coord.lon, timezoneOffset);
-    displayDate(); // Update date in mainContainer
+    // Calculate timezone offset in seconds
+    const timezoneOffset = data.timezone;
+
+    // Update local time based on timezone offset
+    displayLocalTime(timezoneOffset);
+
+    // Update date in mainContainer
+    displayDate();
 };
 
+// Function to convert UTC timestamp to local time based on timezone offset
+const convertUTCToLocalTime = (timezoneOffsetSeconds) => {
+    // Get current UTC time in milliseconds
+    const now = new Date();
+    const utcMilliseconds = now.getTime() + now.getTimezoneOffset() * 60000;
+
+    // Convert timezone offset from seconds to milliseconds
+    const timezoneOffsetMilliseconds = timezoneOffsetSeconds * 1000;
+
+    // Calculate local time in milliseconds
+    const localTimeMilliseconds = utcMilliseconds + timezoneOffsetMilliseconds;
+
+    // Create a new Date object for the local time
+    const localDate = new Date(localTimeMilliseconds);
+
+    // Return the formatted local time string
+    return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+};
+
+// Function to display local time based on timezone offset
+const displayLocalTime = (timezoneOffset) => {
+    const updateTime = () => {
+        const localTime = convertUTCToLocalTime(timezoneOffset);
+        localTimeElement.textContent = `Local Time: ${localTime}`;
+    };
+
+    if (timeIntervalId) {
+        clearInterval(timeIntervalId); // Clear the previous interval
+    }
+
+    timeIntervalId = setInterval(updateTime, 1000); // Update time every second
+    updateTime(); // Initial call to display time immediately
+};
 
 // Function to fetch weather data from OpenWeatherMap API
 const callWeatherAPI = (city) => {
@@ -150,7 +170,7 @@ const displayDailyWeather = (data) => {
 
         card.innerHTML = `
             <div class="day">${dayName}</div>
-            <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="${day.weather[0].description}" class="weatherIcon">
+            <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="${day.weather[0].description}" class="weatherIcon">
             <div class="weatherDescription">${day.weather[0].description}</div>
             <div class="temperature">
                 <span class="max">${Math.round(day.temp.max - 273.15)}°C</span> /
@@ -162,7 +182,7 @@ const displayDailyWeather = (data) => {
     });
 };
 
-// Fetch coordinates for the city and then get daily and hourly weather
+// Function to fetch city coordinates for weather display
 const fetchCityCoordinates = (city) => {
     fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`)
         .then(response => response.json())
@@ -177,22 +197,7 @@ const fetchCityCoordinates = (city) => {
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
 
-const displayLocalTime = (latitude, longitude, timezoneOffset) => {
-    const localTimeElement = document.getElementById("local-time");
-
-    const updateTime = () => {
-        const currentUTC = new Date().getTime(); // Current UTC time in milliseconds
-        const cityOffset = timezoneOffset * 1000; // Convert seconds to milliseconds for city's timezone offset
-        const localTime = new Date(currentUTC + cityOffset); // Calculate local time
-        localTimeElement.textContent = `Local Time: ${localTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    };
-
-    setInterval(updateTime, 1000); // Update time every second
-    updateTime(); // Initial call to display time immediately
-};
-
-
-// Function to display the current date in mainContainer
+// Function to display current date
 const displayDate = () => {
     const currentDate = new Date();
     const day = currentDate.getDate();
@@ -241,7 +246,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-
+// Add weather layer to the map
 fetch(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`)
     .then(response => {
         if (!response.ok) {
