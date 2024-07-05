@@ -51,7 +51,6 @@ const setWeatherDetails = (data) => {
     fetchHourlyWeather(data.name, timezoneOffset);
 };
 
-
 // Function to convert UTC timestamp to local time based on timezone offset
 const convertUTCToLocalTime = (timezoneOffsetSeconds) => {
     // Get current UTC time in milliseconds
@@ -213,8 +212,12 @@ const fetchCityCoordinates = (city) => {
                 throw new Error(`Coordinates for ${city} not found. Please try again.`);
             }
             const cityInfo = { lat: data[0].lat, lon: data[0].lon };
-            fetchDailyWeather(cityInfo);
-            fetchHourlyWeather(city);
+
+            // Update Leaflet map's center to city coordinates
+            map.setView([cityInfo.lat, cityInfo.lon], 10); // Adjust zoom level as needed
+
+            fetchDailyWeather(cityInfo); // Fetch and display daily weather
+            fetchHourlyWeather(city); // Fetch and display hourly weather
         })
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
@@ -260,7 +263,7 @@ const initializeWeather = () => {
 document.addEventListener("DOMContentLoaded", initializeWeather);
 
 // Initialize Leaflet map
-const map = L.map('map').setView([51.505, -0.09], 13); // Set initial map center and zoom level
+const map = L.map('map').setView([51.505, -0.09], 5); // Adjust zoom level to show a larger area
 
 // Add OpenStreetMap tile layer as the base map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -268,16 +271,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Add weather layer to the map
-fetch(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Weather map data not found. Status: ${response.status}`);
-        }
-        return response.blob();
-    })
-    .then(blob => {
-        // Create a new layer and add it to the map
-        const weatherLayer = L.tileLayer(URL.createObjectURL(blob)).addTo(map);
-    })
-    .catch(error => console.error('Error fetching weather map data:', error));
+// Fetch and display OpenWeatherMap weather map tiles
+const weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18,
+}).addTo(map);
