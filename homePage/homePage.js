@@ -46,7 +46,11 @@ const setWeatherDetails = (data) => {
 
     // Update date in mainContainer
     displayDate();
+
+    // Fetch hourly weather based on the city's name and timezone offset
+    fetchHourlyWeather(data.name, timezoneOffset);
 };
+
 
 // Function to convert UTC timestamp to local time based on timezone offset
 const convertUTCToLocalTime = (timezoneOffsetSeconds) => {
@@ -119,29 +123,47 @@ const displayHourlyWeather = (data) => {
     const hourlyData = data.list.slice(0, 12); // Get data for the next 12 hours
     hourlyWeatherContainer.innerHTML = ""; // Clear previous content
 
+    // Get the city's timezone offset in seconds
+    const timezoneOffset = data.city.timezone;
+
+    // Get the current UTC time in milliseconds
+    const currentUTCTime = new Date().getTime();
+
+    // Calculate the city's current local time in milliseconds
+    const cityCurrentTime = currentUTCTime + timezoneOffset * 1000;
+
+    // Calculate the time of the next whole hour in the city's local time
+    const nextWholeHour = new Date(cityCurrentTime);
+    nextWholeHour.setMinutes(0, 0, 0);
+    nextWholeHour.setHours(nextWholeHour.getHours() + 1);
+
     hourlyData.forEach(hour => {
-        const card = document.createElement("div");
-        card.classList.add("hourlyCard");
+        const cardTime = new Date((hour.dt + timezoneOffset) * 1000);
+        // Check if the card time is at or after the next whole hour
+        if (cardTime >= nextWholeHour) {
+            const card = document.createElement("div");
+            card.classList.add("hourlyCard");
 
-        card.innerHTML = `
-            <div class="hour">${formatTime(hour.dt)}</div>
-            <div class="temperature">${Math.round(hour.main.temp - 273.15)}°C</div>
-            <div class="chanceOfRain">Rain ${Math.round(hour.pop * 100)}%</div>
-            <div class="weatherDescription">${hour.weather[0].description}</div>
-        `;
+            card.innerHTML = `
+                <div class="hour">${formatTime(hour.dt, timezoneOffset)}</div>
+                <div class="temperature">${Math.round(hour.main.temp - 273.15)}°C</div>
+                <div class="chanceOfRain">Rain ${Math.round(hour.pop * 100)}%</div>
+                <div class="weatherDescription">${hour.weather[0].description}</div>
+            `;
 
-        hourlyWeatherContainer.appendChild(card);
+            hourlyWeatherContainer.appendChild(card);
+            nextWholeHour.setHours(nextWholeHour.getHours() + 1); // Increment nextWholeHour by 1 hour
+        }
     });
 };
 
-const formatTime = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+const formatTime = (timestamp, timezoneOffset) => {
+    const date = new Date((timestamp + timezoneOffset) * 1000);
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
 };
 
-// Function to fetch daily weather
 const fetchDailyWeather = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${city.lat}&lon=${city.lon}&exclude=hourly,minutely&appid=${API_KEY}`)
         .then(response => {

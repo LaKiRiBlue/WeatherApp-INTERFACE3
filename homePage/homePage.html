@@ -11,13 +11,7 @@
     <link rel="stylesheet" href="../dailyWeather/dailyWeather.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        #map {
-            height: 400px;
-            width: 600px;
-            margin-top: 20px;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="header">
@@ -65,7 +59,15 @@
     <div class="dailyWeatherContainer" id="dailyWeatherContainer">
         <!-- Daily weather cards will be dynamically inserted here -->
     </div>
+    <br>
     <div id="map"></div>
+    <style>
+        #map {
+            height: 400px;
+            width: 600px;
+            margin-top: 20px;
+        }
+    </style>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
