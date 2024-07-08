@@ -1,5 +1,6 @@
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -16,16 +17,19 @@ body {
     justify-content: center;
     gap: 10px;
     padding: 20px;
-    width: 100vw;
+    width: 100vw; 
 }
 
 .dailyCard {
-    background-color: rgb(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 150px;
     text-align: center;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
 }
 
 .dailyCard .day {
@@ -49,31 +53,43 @@ body {
 .dailyCard .temperature {
     font-size: 1em;
     font-weight: bold;
+    align-self: flex-end; 
+    margin-top: auto; 
 }
 
 .dailyCard .temperature .max {
-    color: #e74c3c;
+    color: #e74c3c; 
 }
 
 .dailyCard .temperature .min {
-    color: #3498db;
+    color: #3498db; 
 }
+
+
 @media only screen and (max-width: 600px) {
     .dailyWeatherContainer {
-        width: 100%;
-        padding: 0px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        
+        padding: 10px; 
     }
+    
     .dailyCard {
-        width: 90%;
-        height: 100px;
-        padding: 7px;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        width: calc(100% - 20px); 
+        height: auto; 
+        padding: 15px; 
+    }
+
+    .dailyCard .weatherIcon {
+        width: 40px;
+    }
+
+    .dailyCard .day {
+        font-size: 1em;
+    }
+
+    .dailyCard .weatherDescription {
+        font-size: 0.8em;
+    }
+
+    .dailyCard .temperature {
+        font-size: 0.9em;
     }
 }

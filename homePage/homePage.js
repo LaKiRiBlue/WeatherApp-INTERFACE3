@@ -90,8 +90,7 @@ const callWeatherAPI = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`)
         .then(response => {
             if (!response.ok) {
-                alert("City not found. Please check the spelling and try again.");
-                throw new Error(`Request failed with status ${response.status}`);
+                throw new Error("City not found. Please check the spelling and try again.");
             }
             return response.json();
         })
@@ -99,8 +98,15 @@ const callWeatherAPI = (city) => {
             setWeatherDetails(data);
             fetchCityCoordinates(city);
         })
-        .catch(error => console.error('Error fetching weather data:', error));
+        .catch(error => {
+            console.error('Error fetching weather data:', error.message);
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = 'Failed to fetch weather data. Please try again later.';
+            // Display error message in your UI
+            document.body.appendChild(errorMessage);
+        });
 };
+
 
 // Function to fetch hourly weather
 const fetchHourlyWeather = (city) => {
@@ -146,8 +152,9 @@ const displayHourlyWeather = (data) => {
             card.innerHTML = `
                 <div class="hour">${formatTime(hour.dt, timezoneOffset)}</div>
                 <div class="temperature">${Math.round(hour.main.temp - 273.15)}°C</div>
-                <div class="chanceOfRain">Rain ${Math.round(hour.pop * 100)}%</div>
+                <div class="chanceOfRain">☔ ${Math.round(hour.pop * 100)}%</div>
                 <div class="weatherDescription">${hour.weather[0].description}</div>
+                <img src="http://openweathermap.org/img/wn/${hour.weather[0].icon}.png" alt="${hour.weather[0].description}" class="weatherIcon">
             `;
 
             hourlyWeatherContainer.appendChild(card);
@@ -155,6 +162,7 @@ const displayHourlyWeather = (data) => {
         }
     });
 };
+
 
 const formatTime = (timestamp, timezoneOffset) => {
     const date = new Date((timestamp + timezoneOffset) * 1000);
@@ -240,7 +248,6 @@ searchButton.addEventListener("click", () => {
     }
 });
 
-// Event listener for Enter key press in search input
 searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
         const cityName = searchInput.value.trim();
@@ -251,6 +258,7 @@ searchInput.addEventListener("keypress", (e) => {
         }
     }
 });
+
 
 // Function to initialize the page with default city (Brussels) weather
 const initializeWeather = () => {

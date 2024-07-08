@@ -23,7 +23,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 70%;
   height: 140px;
   border-radius: 1rem;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -143,42 +143,48 @@ html, body {
   max-height: 3rem;
   margin-right: 0.5rem;
 }
-/* Media query for screens up to 768px */
+.day{
+  color: #323232;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+
+}
+
 @media only screen and (max-width: 600px) {
   body {
-    width: 100%; /* Ensure body takes up full width of viewport */
-    padding: 0; /* Remove any default padding */
-    margin: 0; /* Remove any default margin */
+      width: 100%;
+      padding: 0;
+      margin: 0;
   }
   .logo {
-    width: 50%; /* Ensure logo takes up full width of viewport */
+      width: 50%;
   }
-  h1{
-    font-size: 1.1rem; /* Adjusted font size for better mobile display */}
+  h1 {
+      font-size: 1.1rem;
+      text-align: center; 
+  }
 
   .header {
-    height: 70px; 
-    margin-bottom: 5px;
+      height: 70px;
+      margin-bottom: 5px;
   }
 
   .contentWrapper {
-    display: flex;
-    flex-direction: column; /* Changed to column layout for better mobile display */
-    align-items: center; 
-    /* Centered content for better mobile display */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
   }
 
   .mainContainer {
-    width: 90%; 
-    /* Adjusted width for better mobile layout */
+      width: 90%;
   }
 
   .searchInput input {
-    width: 60%; /* Adjusted input width for smaller screens */
+      width: 60%;
   }
 
   .searchInput button {
-    width: 2rem; /* Adjusted button width for smaller screens */
-    
+      width: 2rem;
   }
 }

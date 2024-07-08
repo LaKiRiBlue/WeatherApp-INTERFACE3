@@ -1,14 +1,13 @@
-/* hourlyWeather.css */
-
 .hourlyWeatherContainer {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    flex-direction: row;
+    flex-wrap: wrap; 
+    font-family: 'Roboto', sans-serif;
 }
 
 .hourlyCard {
-    background-color: rgb(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -16,15 +15,25 @@
     margin: 10px;
     text-align: center;
     width: 100px;
+    display: flex; /* Add display flex */
+    flex-direction: column; /* Adjust flex direction to column */
+    justify-content: space-between; /* Space between for alignment */
+}
+
+.hourlyCard .weatherIcon {
+    width: 40px;
+    height: auto;
+    margin-bottom: 5px;
+    align-self: flex-end; /* Align the weather icon to flex end */
 }
 
 .hour {
-    font-weight: bold;
+    font-weight: normal;
     margin-bottom: 5px;
 }
 
 .temperature {
-    font-size: 1.2em;
+    font-size: 1.8em;
     margin-bottom: 5px;
 }
 
@@ -37,14 +46,15 @@
     font-style: italic;
     color: #555;
 }
+
 @media only screen and (max-width: 600px) {
     .hourlyWeatherContainer {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        
     }
+
     .hourlyCard {
         width: 80%;
     }
