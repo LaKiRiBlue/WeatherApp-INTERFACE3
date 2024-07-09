@@ -203,7 +203,7 @@ const displayDailyWeather = (data) => {
             <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="${day.weather[0].description}" class="weatherIcon">
             <div class="weatherDescription">${day.weather[0].description}</div>
             <div class="temperature">
-                <span class="max">${Math.round(day.temp.max - 273.15)}°C</span> /
+                <span class="max">${Math.round(day.temp.max - 273.15)}°C</span>
                 <span class="min">${Math.round(day.temp.min - 273.15)}°C</span>
             </div>
         `;
