@@ -152,10 +152,11 @@ const displayHourlyWeather = (data) => {
             card.innerHTML = `
                 <div class="hour">${formatTime(hour.dt, timezoneOffset)}</div>
                 <div class="temperature">${Math.round(hour.main.temp - 273.15)}°C</div>
+                <img src="http://openweathermap.org/img/wn/${hour.weather[0].icon}.png" alt="${hour.weather[0].description}" class="weatherIcon">
                 <div class="chanceOfRain">☔ ${Math.round(hour.pop * 100)}%</div>
                 <div class="weatherDescription">${hour.weather[0].description}</div>
-                <img src="http://openweathermap.org/img/wn/${hour.weather[0].icon}.png" alt="${hour.weather[0].description}" class="weatherIcon">
-            `;
+            `
+                
 
             hourlyWeatherContainer.appendChild(card);
             nextWholeHour.setHours(nextWholeHour.getHours() + 1); // Increment nextWholeHour by 1 hour
@@ -211,6 +212,7 @@ const displayDailyWeather = (data) => {
     });
 };
 
+// Function to fetch city coordinates for weather display
 // Function to fetch city coordinates for weather display
 const fetchCityCoordinates = (city) => {
     fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`)
@@ -271,7 +273,9 @@ const initializeWeather = () => {
 document.addEventListener("DOMContentLoaded", initializeWeather);
 
 // Initialize Leaflet map
-const map = L.map('map').setView([51.505, -0.09], 5); // Adjust zoom level to show a larger area
+// Initialize Leaflet map
+// Initialize Leaflet map
+const map = L.map('map').setView([51.505, -0.09], 5); // Default view (adjust zoom level)
 
 // Add OpenStreetMap tile layer as the base map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -279,8 +283,92 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Fetch and display OpenWeatherMap weather map tiles
+// Optional: Fetch and display weather-related map tiles
 const weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 18,
 }).addTo(map);
+// Function to adjust map size when it becomes visible
+const adjustMapSize = () => {
+    if (map) {
+        map.invalidateSize(); // Notify Leaflet that the map size changed
+    }
+};
+
+// Example of showing the map and adjusting its size
+const showMapContainer = () => {
+    const mapContainer = document.getElementById('map');
+    mapContainer.style.display = 'block'; // Show the map container
+    adjustMapSize(); // Adjust map size when shown
+};
+
+// Example of hiding the map
+const hideMapContainer = () => {
+    const mapContainer = document.getElementById('map');
+    mapContainer.style.display = 'none'; // Hide the map container
+};
+
+// Event listener or function call to adjust map size when needed
+document.getElementById('mapButton').addEventListener('click', showMapContainer);
+
+// Optionally, adjust map size when the window is resized
+window.addEventListener('resize', adjustMapSize);
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Get the containers
+    const mainContainer = document.getElementById("mainContainer");
+    const hourlyWeatherContainer = document.getElementById("hourlyWeatherContainer");
+    const dailyWeatherContainer = document.getElementById("dailyWeatherContainer");
+    const moodContainer = document.getElementById("moodContainer");
+    const mapContainer = document.getElementById("map");
+
+    // Function to hide all containers
+    function hideAllContainers() {
+        mainContainer.style.display = 'none';
+        hourlyWeatherContainer.style.display = 'none';
+        dailyWeatherContainer.style.display = 'none';
+        moodContainer.style.display = 'none';
+        mapContainer.style.display = 'none';
+    }
+
+    // Function to show the specified container
+    function showContainer(container) {
+        container.style.display = 'block';
+    }
+
+    // Event listeners for buttons
+    document.getElementById("todayButton").addEventListener("click", function() {
+        hideAllContainers();
+        showContainer(mainContainer);
+    });
+
+    document.getElementById("hourlyButton").addEventListener("click", function() {
+        hideAllContainers();
+        showContainer(hourlyWeatherContainer);
+    });
+
+    document.getElementById("dailyButton").addEventListener("click", function() {
+        hideAllContainers();
+        showContainer(dailyWeatherContainer);
+    });
+
+    document.getElementById("mapButton").addEventListener("click", function() {
+        hideAllContainers();
+        showContainer(mapContainer);
+    });
+
+    document.getElementById("moodButton").addEventListener("click", function() {
+        hideAllContainers();
+        showContainer(moodContainer);
+    });
+
+    // Initially show only the main container and buttons on small screens
+    if (window.innerWidth <= 600) {
+        hideAllContainers();
+        showContainer(mainContainer);
+    }
+});
+
+

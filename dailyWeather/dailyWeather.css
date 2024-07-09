@@ -74,11 +74,12 @@ body {
     .dailyCard {
         width: calc(100% - 20px); 
         height: auto; 
-        padding: 15px; 
+        padding: 15px;
+        margin: 15px; 
     }
 
     .dailyCard .weatherIcon {
-        width: 40px;
+        width: 50px;
     }
 
     .dailyCard .day {
@@ -90,6 +91,6 @@ body {
     }
 
     .dailyCard .temperature {
-        font-size: 0.9em;
+        font-size: 1.3em;
     }
 }

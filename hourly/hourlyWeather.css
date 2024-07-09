@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -15,16 +15,16 @@
     margin: 10px;
     text-align: center;
     width: 100px;
-    display: flex; /* Add display flex */
-    flex-direction: column; /* Adjust flex direction to column */
-    justify-content: space-between; /* Space between for alignment */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .hourlyCard .weatherIcon {
     width: 40px;
     height: auto;
     margin-bottom: 5px;
-    align-self: flex-end; /* Align the weather icon to flex end */
+    align-self: flex-end;
 }
 
 .hour {
@@ -49,13 +49,19 @@
 
 @media only screen and (max-width: 600px) {
     .hourlyWeatherContainer {
-        width: 100%;
-        display: flex;
         flex-direction: column;
         align-items: center;
     }
 
     .hourlyCard {
         width: 80%;
+        margin: 10px auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
     }
-}
+        
+
+    }
+

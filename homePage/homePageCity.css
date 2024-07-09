@@ -1,3 +1,5 @@
+
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 * {
@@ -8,7 +10,6 @@
 }
 
 html, body {
-  
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -143,48 +144,123 @@ html, body {
   max-height: 3rem;
   margin-right: 0.5rem;
 }
-.day{
+
+.day {
   color: #323232;
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 0.5rem;
-
 }
 
+.mobileNav {
+  display: none;
+}
+
+.navButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.navIcon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+}
+#map {
+  height: 400px; 
+  width: 50%; 
+  margin-top: 20px;
+  margin-bottom: 60px; 
+  border-radius: 10px;
+}
+
+/* Adjustments for Small Screens */
 @media only screen and (max-width: 600px) {
   body {
-      width: 100%;
-      padding: 0;
-      margin: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
   }
+  
   .logo {
-      width: 50%;
+    width: 50%;
   }
+  
   h1 {
-      font-size: 1.1rem;
-      text-align: center; 
+    font-size: 1.1rem;
+    text-align: center; 
   }
 
   .header {
-      height: 70px;
-      margin-bottom: 5px;
+    height: 70px;
+    margin-bottom: 5px;
   }
 
   .contentWrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .mainContainer {
-      width: 90%;
+    width: 90%;
   }
 
   .searchInput input {
-      width: 60%;
+    width: 60%;
   }
 
   .searchInput button {
-      width: 2rem;
+    width: 2rem;
   }
+
+  .mobileNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 9999; 
+  }
+
+  .mobileNav .navButton {
+    margin: 5px;
+  }
+
+  .mobileNav .navIcon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+  }
+
+  .hourlyWeatherContainer,
+  .dailyWeatherContainer,
+  .moodContainer,
+  #map {
+    display: none;
+  }
+
+  .mainContainer {
+    display: block;
+  }
+  #map {
+    height: 80vh;
+    width: 100%;
+    
+}
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+}
 }
