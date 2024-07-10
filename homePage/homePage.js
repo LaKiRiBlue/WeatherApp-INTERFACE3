@@ -394,5 +394,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('map').style.display = 'block';
     }
 });
+document.addEventListener("DOMContentLoaded", function() {
+  var footer = document.querySelector(".footer");
+
+  // Function to toggle footer visibility
+  function toggleFooterVisibility() {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      footer.style.display = "block"; // Show footer when at the bottom
+    } else {
+      footer.style.display = "none"; // Hide footer otherwise
+    }
+  }
+
+  // Listen to scroll events and toggle footer visibility
+  window.addEventListener("scroll", toggleFooterVisibility);
+});
 
 
