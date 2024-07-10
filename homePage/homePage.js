@@ -12,13 +12,13 @@ const hourlyWeatherContainer = document.getElementById("hourlyWeatherContainer")
 const dailyWeatherContainer = document.getElementById("dailyWeatherContainer");
 const localTimeElement = document.getElementById("local-time");
 
-// API Key for OpenWeatherMap
-import { API_KEY } from '../config.js'; // Adjust the path as needed
 
-// Variable to store interval ID
+import { API_KEY } from '../config.js'; 
+
+
 let timeIntervalId;
 
-// Function to get the current day name (e.g., Monday)
+
 const getCurrentDayName = () => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const currentDate = new Date();
@@ -26,51 +26,51 @@ const getCurrentDayName = () => {
     return daysOfWeek[dayOfWeek];
 };
 
-// Function to set weather details based on API response
+
 const setWeatherDetails = (data) => {
-    // Update other weather details as before
+
     desc.textContent = data.weather[0].description;
     weather.textContent = `${Math.round(data.main.temp - 273.15)}°C`;
     humidity.textContent = `${data.main.humidity}%`;
     windSpeed.textContent = `${data.wind.speed} km/h`;
 
-    // Set weather icon dynamically based on API response
+ 
     const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
     weatherIcon.src = iconUrl;
 
-    // Calculate timezone offset in seconds
+   
     const timezoneOffset = data.timezone;
 
-    // Update local time based on timezone offset
+  
     displayLocalTime(timezoneOffset);
 
-    // Update date in mainContainer
+    
     displayDate();
 
-    // Fetch hourly weather based on the city's name and timezone offset
+  
     fetchHourlyWeather(data.name, timezoneOffset);
 };
 
-// Function to convert UTC timestamp to local time based on timezone offset
+
 const convertUTCToLocalTime = (timezoneOffsetSeconds) => {
-    // Get current UTC time in milliseconds
+
     const now = new Date();
     const utcMilliseconds = now.getTime() + now.getTimezoneOffset() * 60000;
 
-    // Convert timezone offset from seconds to milliseconds
+
     const timezoneOffsetMilliseconds = timezoneOffsetSeconds * 1000;
 
-    // Calculate local time in milliseconds
+
     const localTimeMilliseconds = utcMilliseconds + timezoneOffsetMilliseconds;
 
-    // Create a new Date object for the local time
+
     const localDate = new Date(localTimeMilliseconds);
 
-    // Return the formatted local time string
+
     return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 };
 
-// Function to display local time based on timezone offset
+
 const displayLocalTime = (timezoneOffset) => {
     const updateTime = () => {
         const localTime = convertUTCToLocalTime(timezoneOffset);
@@ -78,14 +78,14 @@ const displayLocalTime = (timezoneOffset) => {
     };
 
     if (timeIntervalId) {
-        clearInterval(timeIntervalId); // Clear the previous interval
+        clearInterval(timeIntervalId); 
     }
 
-    timeIntervalId = setInterval(updateTime, 1000); // Update time every second
-    updateTime(); // Initial call to display time immediately
+    timeIntervalId = setInterval(updateTime, 1000); 
+    updateTime();
 };
 
-// Function to fetch weather data from OpenWeatherMap API
+
 const callWeatherAPI = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`)
         .then(response => {
@@ -108,7 +108,7 @@ const callWeatherAPI = (city) => {
 };
 
 
-// Function to fetch hourly weather
+
 const fetchHourlyWeather = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}`)
         .then(response => {
@@ -123,28 +123,28 @@ const fetchHourlyWeather = (city) => {
         .catch(error => console.error('Error fetching hourly weather data:', error));
 };
 
-// Function to display hourly weather
-const displayHourlyWeather = (data) => {
-    const hourlyData = data.list.slice(0, 12); // Get data for the next 12 hours
-    hourlyWeatherContainer.innerHTML = ""; // Clear previous content
 
-    // Get the city's timezone offset in seconds
+const displayHourlyWeather = (data) => {
+    const hourlyData = data.list.slice(0, 12); 
+    hourlyWeatherContainer.innerHTML = ""; 
+
+
     const timezoneOffset = data.city.timezone;
 
-    // Get the current UTC time in milliseconds
+
     const currentUTCTime = new Date().getTime();
 
-    // Calculate the city's current local time in milliseconds
+
     const cityCurrentTime = currentUTCTime + timezoneOffset * 1000;
 
-    // Calculate the time of the next whole hour in the city's local time
+
     const nextWholeHour = new Date(cityCurrentTime);
     nextWholeHour.setMinutes(0, 0, 0);
     nextWholeHour.setHours(nextWholeHour.getHours() + 1);
 
     hourlyData.forEach(hour => {
         const cardTime = new Date((hour.dt + timezoneOffset) * 1000);
-        // Check if the card time is at or after the next whole hour
+
         if (cardTime >= nextWholeHour) {
             const card = document.createElement("div");
             card.classList.add("hourlyCard");
@@ -159,7 +159,7 @@ const displayHourlyWeather = (data) => {
                 
 
             hourlyWeatherContainer.appendChild(card);
-            nextWholeHour.setHours(nextWholeHour.getHours() + 1); // Increment nextWholeHour by 1 hour
+            nextWholeHour.setHours(nextWholeHour.getHours() + 1); 
         }
     });
 };
@@ -186,10 +186,10 @@ const fetchDailyWeather = (city) => {
         .catch(error => console.error('Error fetching daily weather data:', error));
 };
 
-// Function to display daily weather
+
 const displayDailyWeather = (data) => {
-    const dailyData = data.daily.slice(0, 7); // Get data for the next 7 days
-    dailyWeatherContainer.innerHTML = ""; // Clear previous content
+    const dailyData = data.daily.slice(0, 7); 
+    dailyWeatherContainer.innerHTML = "";
 
     dailyData.forEach(day => {
         const card = document.createElement("div");
@@ -212,8 +212,6 @@ const displayDailyWeather = (data) => {
     });
 };
 
-// Function to fetch city coordinates for weather display
-// Function to fetch city coordinates for weather display
 const fetchCityCoordinates = (city) => {
     fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`)
         .then(response => response.json())
@@ -223,16 +221,15 @@ const fetchCityCoordinates = (city) => {
             }
             const cityInfo = { lat: data[0].lat, lon: data[0].lon };
 
-            // Update Leaflet map's center to city coordinates
-            map.setView([cityInfo.lat, cityInfo.lon], 10); // Adjust zoom level as needed
 
-            fetchDailyWeather(cityInfo); // Fetch and display daily weather
-            fetchHourlyWeather(city); // Fetch and display hourly weather
+            map.setView([cityInfo.lat, cityInfo.lon], 10);
+
+            fetchDailyWeather(cityInfo); 
+            fetchHourlyWeather(city);
         })
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
 
-// Function to display current date
 const displayDate = () => {
     const currentDate = new Date();
     const day = currentDate.getDate();
@@ -240,7 +237,6 @@ const displayDate = () => {
     dateElement.textContent = `${month} ${day}`;
 };
 
-// Event listener for search button click
 searchButton.addEventListener("click", () => {
     const cityName = searchInput.value.trim();
     if (cityName === "") {
@@ -262,56 +258,47 @@ searchInput.addEventListener("keypress", (e) => {
 });
 
 
-// Function to initialize the page with default city (Brussels) weather
+
 const initializeWeather = () => {
-    callWeatherAPI("Brussels"); // Replace with your default city
+    callWeatherAPI("Brussels"); 
     dayName.textContent = getCurrentDayName();
-    displayDate(); // Display current date
+    displayDate(); 
 };
 
-// Initialize weather data on page load
+
 document.addEventListener("DOMContentLoaded", initializeWeather);
 
-// Initialize Leaflet map
-// Initialize Leaflet map
-// Initialize Leaflet map
 const map = L.map('map').setView([51.505, -0.09], 5); // Default view (adjust zoom level)
 
-// Add OpenStreetMap tile layer as the base map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Optional: Fetch and display weather-related map tiles
-const weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`, {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 18,
-}).addTo(map);
-// Function to adjust map size when it becomes visible
+
 const adjustMapSize = () => {
     if (map) {
-        map.invalidateSize(); // Notify Leaflet that the map size changed
+        map.invalidateSize(); 
     }
 };
 
-// Example of showing the map and adjusting its size
+
 const showMapContainer = () => {
     const mapContainer = document.getElementById('map');
-    mapContainer.style.display = 'block'; // Show the map container
-    adjustMapSize(); // Adjust map size when shown
+    mapContainer.style.display = 'block'; 
+    adjustMapSize(); 
 };
 
-// Example of hiding the map
+
 const hideMapContainer = () => {
     const mapContainer = document.getElementById('map');
-    mapContainer.style.display = 'none'; // Hide the map container
+    mapContainer.style.display = 'none'; 
 };
 
-// Event listener or function call to adjust map size when needed
+
 document.getElementById('mapButton').addEventListener('click', showMapContainer);
 
-// Optionally, adjust map size when the window is resized
+
 window.addEventListener('resize', adjustMapSize);
 
 
@@ -324,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const moodContainer = document.getElementById("moodContainer");
     const mapContainer = document.getElementById("map");
 
-    // Function to hide all containers
+
     function hideAllContainers() {
         mainContainer.style.display = 'none';
         hourlyWeatherContainer.style.display = 'none';
@@ -333,12 +320,12 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.style.display = 'none';
     }
 
-    // Function to show the specified container
+
     function showContainer(container) {
         container.style.display = 'block';
     }
 
-    // Event listeners for buttons
+
     document.getElementById("todayButton").addEventListener("click", function() {
         hideAllContainers();
         showContainer(mainContainer);
@@ -364,24 +351,22 @@ document.addEventListener("DOMContentLoaded", function() {
         showContainer(moodContainer);
     });
 
-    // Initially show only the main container and buttons on small screens
+ 
     if (window.innerWidth <= 600) {
         hideAllContainers();
         showContainer(mainContainer);
     }
 });
-// Initial width when the page loads
+
 let initialWidth = window.innerWidth;
 
 window.addEventListener('resize', function() {
     let currentWidth = window.innerWidth;
     
-    // Check if the window width crosses the 600px threshold
     if ((initialWidth <= 600 && currentWidth > 600) || (initialWidth > 600 && currentWidth <= 600)) {
         location.reload();
     }
-    
-    // Update the initial width to the current width
+
     initialWidth = currentWidth;
 });
 
@@ -394,20 +379,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('map').style.display = 'block';
     }
 });
-document.addEventListener("DOMContentLoaded", function() {
-  var footer = document.querySelector(".footer");
+// document.addEventListener("DOMContentLoaded", function() {
+//   var footer = document.querySelector(".footer");
 
-  // Function to toggle footer visibility
-  function toggleFooterVisibility() {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-      footer.style.display = "block"; // Show footer when at the bottom
-    } else {
-      footer.style.display = "none"; // Hide footer otherwise
-    }
-  }
+//   // Function to toggle footer visibility
+//   function toggleFooterVisibility() {
+//     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+//       footer.style.display = "block"; // Show footer when at the bottom
+//     } else {
+//       footer.style.display = "none"; // Hide footer otherwise
+//     }
+//   }
 
-  // Listen to scroll events and toggle footer visibility
-  window.addEventListener("scroll", toggleFooterVisibility);
-});
+//   // Listen to scroll events and toggle footer visibility
+//   window.addEventListener("scroll", toggleFooterVisibility);
+// });
 
 

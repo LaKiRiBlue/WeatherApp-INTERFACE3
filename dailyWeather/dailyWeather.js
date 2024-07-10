@@ -18,8 +18,8 @@ const fetchDailyWeather = (city) => {
 };
 
 const displayDailyWeather = (data) => {
-    const dailyData = data.daily.slice(0, 7); // Get data for the next 7 days
-    dailyWeatherContainer.innerHTML = ""; // Clear previous content
+    const dailyData = data.daily.slice(0, 7); 
+    dailyWeatherContainer.innerHTML = ""; 
 
     dailyData.forEach(day => {
         const card = document.createElement("div");
@@ -56,5 +56,5 @@ const fetchCityCoordinates = (city) => {
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
 
-// Initialize daily weather data on page load
-fetchCityCoordinates("Brussels"); // Replace with your default city or dynamic city selection
+
+fetchCityCoordinates("Brussels"); 
