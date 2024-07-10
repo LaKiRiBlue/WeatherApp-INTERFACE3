@@ -370,5 +370,29 @@ document.addEventListener("DOMContentLoaded", function() {
         showContainer(mainContainer);
     }
 });
+// Initial width when the page loads
+let initialWidth = window.innerWidth;
+
+window.addEventListener('resize', function() {
+    let currentWidth = window.innerWidth;
+    
+    // Check if the window width crosses the 600px threshold
+    if ((initialWidth <= 600 && currentWidth > 600) || (initialWidth > 600 && currentWidth <= 600)) {
+        location.reload();
+    }
+    
+    // Update the initial width to the current width
+    initialWidth = currentWidth;
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 600) {
+        document.querySelector('.mobileNav').style.display = 'flex';
+        document.getElementById('map').style.display = 'none';
+    } else {
+        document.querySelector('.mobileNav').style.display = 'none';
+        document.getElementById('map').style.display = 'block';
+    }
+});
 
 
