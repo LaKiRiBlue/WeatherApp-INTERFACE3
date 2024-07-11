@@ -12,12 +12,9 @@ const hourlyWeatherContainer = document.getElementById("hourlyWeatherContainer")
 const dailyWeatherContainer = document.getElementById("dailyWeatherContainer");
 const localTimeElement = document.getElementById("local-time");
 
-
 import { API_KEY } from '../config.js'; 
 
-
 let timeIntervalId;
-
 
 const getCurrentDayName = () => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -26,50 +23,29 @@ const getCurrentDayName = () => {
     return daysOfWeek[dayOfWeek];
 };
 
-
 const setWeatherDetails = (data) => {
-
     desc.textContent = data.weather[0].description;
     weather.textContent = `${Math.round(data.main.temp - 273.15)}°C`;
     humidity.textContent = `${data.main.humidity}%`;
     windSpeed.textContent = `${data.wind.speed} km/h`;
 
- 
     const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
     weatherIcon.src = iconUrl;
 
-   
     const timezoneOffset = data.timezone;
-
-  
     displayLocalTime(timezoneOffset);
-
-    
     displayDate();
-
-  
     fetchHourlyWeather(data.name, timezoneOffset);
 };
 
-
 const convertUTCToLocalTime = (timezoneOffsetSeconds) => {
-
     const now = new Date();
     const utcMilliseconds = now.getTime() + now.getTimezoneOffset() * 60000;
-
-
     const timezoneOffsetMilliseconds = timezoneOffsetSeconds * 1000;
-
-
     const localTimeMilliseconds = utcMilliseconds + timezoneOffsetMilliseconds;
-
-
     const localDate = new Date(localTimeMilliseconds);
-
-
     return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 };
-
 
 const displayLocalTime = (timezoneOffset) => {
     const updateTime = () => {
@@ -84,7 +60,6 @@ const displayLocalTime = (timezoneOffset) => {
     timeIntervalId = setInterval(updateTime, 1000); 
     updateTime();
 };
-
 
 const callWeatherAPI = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`)
@@ -107,8 +82,6 @@ const callWeatherAPI = (city) => {
         });
 };
 
-
-
 const fetchHourlyWeather = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}`)
         .then(response => {
@@ -123,21 +96,13 @@ const fetchHourlyWeather = (city) => {
         .catch(error => console.error('Error fetching hourly weather data:', error));
 };
 
-
 const displayHourlyWeather = (data) => {
     const hourlyData = data.list.slice(0, 12); 
     hourlyWeatherContainer.innerHTML = ""; 
 
-
     const timezoneOffset = data.city.timezone;
-
-
     const currentUTCTime = new Date().getTime();
-
-
     const cityCurrentTime = currentUTCTime + timezoneOffset * 1000;
-
-
     const nextWholeHour = new Date(cityCurrentTime);
     nextWholeHour.setMinutes(0, 0, 0);
     nextWholeHour.setHours(nextWholeHour.getHours() + 1);
@@ -156,14 +121,12 @@ const displayHourlyWeather = (data) => {
                 <div class="chanceOfRain">☔ ${Math.round(hour.pop * 100)}%</div>
                 <div class="weatherDescription">${hour.weather[0].description}</div>
             `
-                
 
             hourlyWeatherContainer.appendChild(card);
             nextWholeHour.setHours(nextWholeHour.getHours() + 1); 
         }
     });
 };
-
 
 const formatTime = (timestamp, timezoneOffset) => {
     const date = new Date((timestamp + timezoneOffset) * 1000);
@@ -185,7 +148,6 @@ const fetchDailyWeather = (city) => {
         })
         .catch(error => console.error('Error fetching daily weather data:', error));
 };
-
 
 const displayDailyWeather = (data) => {
     const dailyData = data.daily.slice(0, 7); 
@@ -219,17 +181,65 @@ const fetchCityCoordinates = (city) => {
             if (data.length === 0) {
                 throw new Error(`Coordinates for ${city} not found. Please try again.`);
             }
-            const cityInfo = { lat: data[0].lat, lon: data[0].lon };
+            const cityInfo = { name: data[0].name, lat: data[0].lat, lon: data[0].lon };
 
-
+            // Set the map view to the city coordinates
             map.setView([cityInfo.lat, cityInfo.lon], 10);
 
-            fetchDailyWeather(cityInfo); 
+            // Fetch and display daily and hourly weather for the city
+            fetchDailyWeather(cityInfo);
             fetchHourlyWeather(city);
+
+            // Display weather markers on the map
         })
         .catch(error => console.error('Error fetching city coordinates:', error));
 };
 
+
+// Initialize Leaflet map
+const map = L.map('map').setView([0,  0], 5); // Adjust default view as needed
+
+// add layer on map for viewing cities in english
+//https://rapidapi.com/MapTilesApi/api/maptiles/playground/apiendpoint_a511ac98-f95a-43c7-a518-19fe9d5071b6
+L.tileLayer('https://maptiles.p.rapidapi.com/fr/map/v1/{z}/{x}/{y}.png?rapidapi-key={apikey}', {
+	attribution: '&copy; <a href="http://www.maptilesapi.com/">MapTiles API</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	apikey: 'b441ba2bfemsh17b97b791ba1b09p116276jsn8ea43dc9608b',
+	maxZoom: 19
+}).addTo(map);
+//api maptiles en
+//b441ba2bfemsh17b97b791ba1b09p116276jsn8ea43dc9608b
+
+// LAYERS FOR VIEWING WEATHER DATA
+// doc : https://openweathermap.org/api/weathermaps
+// add layer for viewing precipitations
+// L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}', {
+//     layer : 'precipitation_new',
+//     apiKey : '8cf5ac5621c8d0266298a149e49d7514'
+// }).addTo(map);
+
+//add layer for viewing temperature 
+L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}', {
+    layer : 'temp_new',
+    apiKey : '8cf5ac5621c8d0266298a149e49d7514'
+}).addTo(map);
+
+searchButton.addEventListener("click", () => {
+    const city = searchInput.value.trim();
+    if (city) {
+        callWeatherAPI(city);
+    }
+});
+
+searchInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        const city = searchInput.value.trim();
+        if (city) {
+            callWeatherAPI(city);
+        }
+    }
+});
+
+dayName.textContent = getCurrentDayName();
 const displayDate = () => {
     const currentDate = new Date();
     const day = currentDate.getDate();
@@ -257,24 +267,13 @@ searchInput.addEventListener("keypress", (e) => {
     }
 });
 
-
-
 const initializeWeather = () => {
     callWeatherAPI("Brussels"); 
     dayName.textContent = getCurrentDayName();
     displayDate(); 
 };
 
-
 document.addEventListener("DOMContentLoaded", initializeWeather);
-
-const map = L.map('map').setView([51.505, -0.09], 5); // Default view (adjust zoom level)
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
 
 const adjustMapSize = () => {
     if (map) {
@@ -282,26 +281,15 @@ const adjustMapSize = () => {
     }
 };
 
-
 const showMapContainer = () => {
     const mapContainer = document.getElementById('map');
     mapContainer.style.display = 'block'; 
     adjustMapSize(); 
 };
 
-
-const hideMapContainer = () => {
-    const mapContainer = document.getElementById('map');
-    mapContainer.style.display = 'none'; 
-};
-
-
 document.getElementById('mapButton').addEventListener('click', showMapContainer);
 
-
 window.addEventListener('resize', adjustMapSize);
-
-
 
 document.addEventListener("DOMContentLoaded", function() {
     // Get the containers
@@ -311,7 +299,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const moodContainer = document.getElementById("moodContainer");
     const mapContainer = document.getElementById("map");
 
-
     function hideAllContainers() {
         mainContainer.style.display = 'none';
         hourlyWeatherContainer.style.display = 'none';
@@ -320,11 +307,9 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.style.display = 'none';
     }
 
-
     function showContainer(container) {
         container.style.display = 'block';
     }
-
 
     document.getElementById("todayButton").addEventListener("click", function() {
         hideAllContainers();
@@ -351,7 +336,6 @@ document.addEventListener("DOMContentLoaded", function() {
         showContainer(moodContainer);
     });
 
- 
     if (window.innerWidth <= 600) {
         hideAllContainers();
         showContainer(mainContainer);
@@ -379,20 +363,3 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('map').style.display = 'block';
     }
 });
-// document.addEventListener("DOMContentLoaded", function() {
-//   var footer = document.querySelector(".footer");
-
-//   // Function to toggle footer visibility
-//   function toggleFooterVisibility() {
-//     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-//       footer.style.display = "block"; // Show footer when at the bottom
-//     } else {
-//       footer.style.display = "none"; // Hide footer otherwise
-//     }
-//   }
-
-//   // Listen to scroll events and toggle footer visibility
-//   window.addEventListener("scroll", toggleFooterVisibility);
-// });
-
-
