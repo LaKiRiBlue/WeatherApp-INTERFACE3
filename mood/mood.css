@@ -48,7 +48,7 @@ h2 {
 }
 
 .moodButton {
-    background-color: #2d92f1;
+    background-color: #02c2dbf1;
     border-radius: 12px;
     color: #000;
     cursor: pointer;
@@ -70,7 +70,7 @@ h2 {
 .moodButton:not(:disabled):hover,
 .moodButton:not(:disabled):focus {
     outline: 0;
-    background: #2d92f1;
+    background: #00fffff1;
     box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 3px 8px 0 rgba(0,0,0,.15);
 }
 
